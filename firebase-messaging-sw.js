@@ -1,4 +1,3 @@
-// Scripts for firebase and firebase messaging
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging.js');
 
