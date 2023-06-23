@@ -1,6 +1,6 @@
 // Scripts for firebase and firebase messaging
-importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-messaging-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js');
 
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
@@ -13,21 +13,43 @@ const firebaseConfig = {
 	measurementId: 'G-4V86PBRCFY',
 };
 
-// eslint-disable-next-line no-undef
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+	firebase.initializeApp(firebaseConfig);
+}
 
 // Retrieve firebase messaging
-// eslint-disable-next-line no-undef
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(function (payload) {
-	console.log('[firebase-messaging-sw.js] Received background message ', payload);
-	// Customize notification here
-	const notificationTitle = 'Background Message Title';
-	const notificationOptions = {
-		body: 'Background Message body.',
-		icon: '/firebase-logo.png',
-	};
+// if ('serviceWorker' in navigator) {
+// 	navigator.serviceWorker
+// 		.register('/firebase-messaging-sw.js')
+// 		.then(async (registration) => {
+// 			console.log('registration is successfully', registration.scope);
+// 			const currentToken = await messaging.getToken({
+// 				vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+// 			});
+// 			if (currentToken) {
+// 				console.log('current token for client: ', currentToken);
+// 				// Perform any other neccessary action with the token
+// 			} else {
+// 				// Show permission request UI
+// 				console.log('No registration token available. Request permission to generate one.');
+// 			}
+// 		})
+// 		.catch((err) => {
+// 			console.log('An error occurred while retrieving token. ', err);
+// 		});
+// }
 
-	self.registration.showNotification(notificationTitle, notificationOptions);
+// Background notifications will be received here
+messaging.onBackgroundMessage(async (message) => {
+	if (Notification.permission === 'granted') {
+		if (navigator.serviceWorker)
+			navigator.serviceWorker.getRegistration().then(async function (reg) {
+				if (reg)
+					await reg.showNotification(message.notification.title, {
+						body: message.notification.body,
+					});
+			});
+	}
 });
