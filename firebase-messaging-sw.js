@@ -20,27 +20,6 @@ if (!firebase.apps.length) {
 // Retrieve firebase messaging
 const messaging = firebase.messaging();
 
-// if ('serviceWorker' in navigator) {
-// 	navigator.serviceWorker
-// 		.register('/firebase-messaging-sw.js')
-// 		.then(async (registration) => {
-// 			console.log('registration is successfully', registration.scope);
-// 			const currentToken = await messaging.getToken({
-// 				vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
-// 			});
-// 			if (currentToken) {
-// 				console.log('current token for client: ', currentToken);
-// 				// Perform any other neccessary action with the token
-// 			} else {
-// 				// Show permission request UI
-// 				console.log('No registration token available. Request permission to generate one.');
-// 			}
-// 		})
-// 		.catch((err) => {
-// 			console.log('An error occurred while retrieving token. ', err);
-// 		});
-// }
-
 // Background notifications will be received here
 messaging.onBackgroundMessage(async (message) => {
 	if (Notification.permission === 'granted') {
