@@ -1,4 +1,5 @@
 // Scripts for firebase and firebase messaging
+importScripts('swenv.js'); // this file should have all the environment variables declared, allowing you to use process.env.ANY_KEY_YOU_DEFINED
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js');
 
