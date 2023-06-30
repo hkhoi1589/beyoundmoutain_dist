@@ -1,17 +1,17 @@
 // Scripts for firebase and firebase messaging
-importScripts('swenv.js'); // this file should have all the environment variables declared, allowing you to use process.env.ANY_KEY_YOU_DEFINED
+importScripts('https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js');
 
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
-	apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-	authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-	projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-	storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-	messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-	appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-	measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+	apiKey: 'AIzaSyAkfHBzGYQcUZL0S76E3TukmzFuzCidge4',
+	authDomain: 'koolyard-84a4a.firebaseapp.com',
+	projectId: 'koolyard-84a4a',
+	storageBucket: 'koolyard-84a4a.appspot.com',
+	messagingSenderId: '669707854180',
+	appId: '1:669707854180:web:8a5e8aa2dd09025df95a71',
+	measurementId: 'G-PG9PCKGMHY',
 };
 
 if (!firebase.apps.length) {
@@ -23,6 +23,38 @@ const messaging = firebase.messaging();
 
 // Background notifications will be received here
 messaging.onBackgroundMessage(async (message) => {
+	// save to indexdb, no matter what
+	const response = await idbKeyval.get('inoty');
+	if (response) {
+		const oldNoti = JSON.parse(response);
+		await idbKeyval.set(
+			'inoty',
+			JSON.stringify([
+				{
+					link: '/student',
+					img: message?.notification?.image || '/avatar/kimthiendung.jpg',
+					title: message?.notification?.title,
+					body: message?.notification?.body,
+					isSeen: false,
+				},
+				...oldNoti.state.noties,
+			])
+		);
+	} else {
+		await idbKeyval.set(
+			'inoty',
+			JSON.stringify([
+				{
+					link: '#',
+					img: message?.notification?.image || '/avatar/kimthiendung.jpg',
+					title: message?.notification?.title,
+					body: message?.notification?.body,
+					isSeen: false,
+				},
+			])
+		);
+	}
+
 	if (Notification.permission === 'granted') {
 		if (navigator.serviceWorker)
 			navigator.serviceWorker.getRegistration().then(async function (reg) {
