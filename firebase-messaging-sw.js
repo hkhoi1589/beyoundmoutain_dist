@@ -25,23 +25,21 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(async (message) => {
 	// save to indexdb, no matter what
 	const response = await idbKeyval.get('inoty');
-	if (response) {
-		const oldNoti = JSON.parse(response);
-		console.log('response notification', message?.notification);
-		await idbKeyval.set(
-			'inoty',
-			JSON.stringify([
-				{
-					link: message?.notification?.link || '#',
-					img: message?.notification?.image || '/img/avatar/kimthiendung.jpg',
-					title: message?.notification?.title,
-					body: message?.notification?.body,
-					isSeen: false,
-				},
-				...oldNoti.state.noties,
-			])
-		);
-	}
+	const oldNoti = JSON.parse(response);
+	console.log('response notification', message?.notification);
+	await idbKeyval.set(
+		'inoty',
+		JSON.stringify([
+			{
+				link: message?.notification?.link || '#',
+				img: message?.notification?.image || '/img/avatar/kimthiendung.jpg',
+				title: message?.notification?.title,
+				body: message?.notification?.body,
+				isSeen: false,
+			},
+			...oldNoti?.state.noties,
+		])
+	);
 
 	if (Notification.permission === 'granted') {
 		console.log('message.notification', message);
