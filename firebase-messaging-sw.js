@@ -14,12 +14,15 @@ const firebaseConfig = {
 	measurementId: 'G-J25HN3JGSE',
 };
 
+let messaging;
+
 if (!firebase.apps.length) {
 	firebase.initializeApp(firebaseConfig);
 }
 
-// Retrieve firebase messaging
-const messaging = firebase.messaging();
+if (firebase.messaging.isSupported()) {
+	messaging = firebase.messaging();
+}
 
 // Background notifications will be received here
 messaging.onBackgroundMessage(async (message) => {
