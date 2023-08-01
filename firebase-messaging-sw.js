@@ -46,7 +46,7 @@ messaging.onBackgroundMessage(async (message) => {
 
 	if (Notification.permission === 'granted') {
 		console.log('message.notification', message);
-		if ('serviceWorker' in navigator)
+		if (navigator.serviceWorker)
 			navigator.serviceWorker.getRegistration().then(async function (reg) {
 				if (reg)
 					await reg.showNotification(message.notification.title, {
